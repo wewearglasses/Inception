@@ -16,8 +16,17 @@
 class ModelPoser:public ofxAssimpModelLoader{
 public:
     void randomPose();
+    void loopPose();
+    void getBindPose();
 protected:
     map<string,aiMatrix4x4>bindPose;
+    map<string,aiVector3D>originRotations;
+    map<string,aiVector3D>phase1Rotations;
+    map<string,aiVector3D>phase2Rotations;
+    map<string,aiVector3D>phase3Rotations;
+    map<string,aiVector3D>phase4Rotations;
+    map<string,aiVector3D>phase5Rotations;
+    float p;
 };
 
 

@@ -25,4 +25,5 @@ class ofApp : public ofBaseApp{
     ofEasyCam cam;
     ofLight pointLight;
     ofFbo frame;
+    bool isNewFrame;
 };

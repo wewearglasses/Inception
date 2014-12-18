@@ -17,32 +17,36 @@ void ofApp::setup(){
     cam.setDistance(500);
     model.loadModel("man.dae");
     
-    model.randomPose();
-//    model.disableTextures();
     model.disableMaterials();
-//    model.setPosition(0, -200, 0);
-    model.setScale(0.12, 0.12, 0.12);
+    model.setPosition(0, 200, 0);
+//    model.setScale(0.7,0.7,0.7);
     frame.allocate(4000, 4000);
+    ofSetFrameRate(25);
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){    
+void ofApp::update(){
+    model.loopPose();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
-//    ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-//    
-////    cam.rotate(1, 0, 0, 1);
-//    cam.begin();
-//    ofEnableLighting();
-//    ofRotateY(180);
-//    ofRotateZ(180);
-//    pointLight.enable();
-//    model.drawFaces();
-//    cam.end();
-    frame.draw(0,0);
+//    frame.draw(0,0);
+    ofEnableLighting();
+    pointLight.enable();
+    ofTranslate(ofGetWidth()/2,ofGetHeight()/2);
+    ofRotateX(ofGetFrameNum()*360/25/6);
+    ofRotateY(ofGetFrameNum()*360/25/6);
+    model.drawFaces();
+    ofSaveFrame();
+    
+    if(ofGetFrameNum()>=25*6){
+        ofExit();
+    }
+    if (isNewFrame) {
+        ofSaveFrame();
+    }
+    
 }
 
 //--------------------------------------------------------------
@@ -67,8 +71,7 @@ void ofApp::keyPressed(int key){
                 ofPopMatrix();
             }
             frame.end();
-            frame.draw(0,0);
-            ofSaveFrame();
+            isNewFrame=true;
             break;
     }
 }
