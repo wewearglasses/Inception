@@ -18,8 +18,10 @@ public:
     void randomPose();
     void loopPose();
     void getBindPose();
+    void dance(float volume);
 protected:
     map<string,aiMatrix4x4>bindPose;
+    map<string,aiVector3D>currRotations;
     map<string,aiVector3D>originRotations;
     map<string,aiVector3D>phase1Rotations;
     map<string,aiVector3D>phase2Rotations;

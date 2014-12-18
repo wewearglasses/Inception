@@ -21,12 +21,24 @@ void ofApp::setup(){
     model.setPosition(0, 200, 0);
 //    model.setScale(0.7,0.7,0.7);
     frame.allocate(4000, 4000);
-    ofSetFrameRate(25);
+//    ofSetFrameRate(25);
+    
+    shader.load("shaders/noise");
+    mic.listDevices();
+    mic.setDeviceID(2);
+    bufferSize=256;
+    mic.setup(this, 0, 2, 44100, bufferSize, 4);
+
+    ofSeedRandom();
+    
+    rotationY=0;
+    pastVolumes.assign(100, 0);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    model.loopPose();
+//    model.loopPose();
+    model.dance(volume);
 }
 
 //--------------------------------------------------------------
@@ -35,18 +47,46 @@ void ofApp::draw(){
     ofEnableLighting();
     pointLight.enable();
     ofTranslate(ofGetWidth()/2,ofGetHeight()/2);
-    ofRotateX(ofGetFrameNum()*360/25/6);
-    ofRotateY(ofGetFrameNum()*360/25/6);
-    model.drawFaces();
-    ofSaveFrame();
+    rotationY+=1;
+
+    ofRotateY(rotationY);
+
     
-    if(ofGetFrameNum()>=25*6){
-        ofExit();
-    }
+    shader.begin();
+    //we want to pass in some varrying values to animate our type / color
+    shader.setUniform1f("timeValX", ofGetElapsedTimef() * 0.1 );
+    shader.setUniform1f("timeValY", -ofGetElapsedTimef() * 0.18 );
+    model.drawFaces();
+    
+    shader.end();
+    
     if (isNewFrame) {
         ofSaveFrame();
     }
     
+}
+
+void ofApp::audioIn(float * input, int bufferSize, int nChannels){
+    float curVol = 0.0;
+    for(int i=0;i<bufferSize*2;i++){
+        curVol+=input[i]*input[i];
+    }
+    curVol/=bufferSize*2;
+    
+    pastVolumes.erase(pastVolumes.begin());
+    pastVolumes.push_back(curVol);
+    float min=99999;
+    float max=-99999;
+    for (float v:pastVolumes) {
+        min=std::min(v,min);
+        max=std::max(v,max);
+    }
+    
+    if(max==min){
+        return;
+    }
+    
+    volume=curVol/(max-min);
 }
 
 //--------------------------------------------------------------

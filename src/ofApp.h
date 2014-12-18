@@ -20,10 +20,17 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+    void audioIn(float * input, int bufferSize, int nChannels); 
 		
     ModelPoser model;
     ofEasyCam cam;
     ofLight pointLight;
     ofFbo frame;
     bool isNewFrame;
+    ofSoundStream mic;
+    ofShader shader;
+    int bufferSize;
+    float volume;
+    float rotationY;
+    vector<float> pastVolumes;
 };

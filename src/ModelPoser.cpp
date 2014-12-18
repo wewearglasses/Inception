@@ -24,7 +24,7 @@ void ModelPoser::loopPose(){
         p=0;
         for (pair<string, aiMatrix4x4> bone:bindPose) {
             aiNode* node=scene->mRootNode->FindNode(bone.first);
-
+            
             originRotations[bone.first]=aiVector3D(ofRandom(-PI, PI),ofRandom(-PI,PI),ofRandom(-PI,PI));
             aiQuaternion rot=aiQuaternion(originRotations[bone.first].x,originRotations[bone.first].y,originRotations[bone.first].z);
             node->mTransformation=bone.second*aiMatrix4x4(rot.GetMatrix());
@@ -33,8 +33,6 @@ void ModelPoser::loopPose(){
             phase3Rotations[bone.first]=(ofRandom(-PI, PI),ofRandom(-PI,PI),ofRandom(-PI,PI));
             phase4Rotations[bone.first]=(ofRandom(-PI, PI),ofRandom(-PI,PI),ofRandom(-PI,PI));
             phase5Rotations[bone.first]=(ofRandom(-PI, PI),ofRandom(-PI,PI),ofRandom(-PI,PI));
-
-            
         }
     }else{
         p+=1.0/25;
@@ -77,22 +75,51 @@ void ModelPoser::loopPose(){
     updateGLResources();
 }
 
+void ModelPoser::dance(float volume){
+    if(!scene){
+        return;
+    }
+    getBindPose();
+    
+    if(currRotations.size()==0){
+        for (pair<string, aiMatrix4x4> bone:bindPose) {
+            currRotations[bone.first]=aiVector3D();
+        }
+    }
+    
+    int counter=0;
+    for (pair<string, aiMatrix4x4> bone:bindPose) {
+        aiNode* node=scene->mRootNode->FindNode(bone.first);
+        float seed=(ofGetFrameNum()+counter*100)*0.01;
+        float dx=ofNoise(seed, 0, 0)*PI/4-PI/8;
+        float dy=ofNoise(0,seed, 0)*PI/4-PI/8;
+        float dz=ofNoise(0,seed, 0)*PI/4-PI/8;
+        aiVector3D v=currRotations[bone.first]+aiVector3D(dx,dy,dz)*volume;
+        currRotations[bone.first]=v;
+        aiQuaternion rot=aiQuaternion(currRotations[bone.first].x,currRotations[bone.first].y,currRotations[bone.first].z);
+        node->mTransformation=bone.second*aiMatrix4x4(rot.GetMatrix());
+    }
+    updateBones();
+    updateGLResources();
+    
+}
+
 void ModelPoser::getBindPose(){
     if (bindPose.size()>0) {
         return;
     }
     
-        for (int i=0; i<scene->mNumMeshes; i++) {
-            
-            aiMesh* mesh=scene->mMeshes[i];
-            for (int j=0; j<mesh->mNumBones; j++) {
-                aiBone* bone=mesh->mBones[j];
-                if(string(bone->mName.data)=="jaw"){
-                    continue;
-                }
-                aiNode* node=scene->mRootNode->FindNode(bone->mName);
-                bindPose[bone->mName.data]=node->mTransformation;
-                cout<<"bone found: "<<bone->mName.data<<endl;
+    for (int i=0; i<scene->mNumMeshes; i++) {
+        
+        aiMesh* mesh=scene->mMeshes[i];
+        for (int j=0; j<mesh->mNumBones; j++) {
+            aiBone* bone=mesh->mBones[j];
+            if(string(bone->mName.data)=="jaw"){
+                continue;
             }
+            aiNode* node=scene->mRootNode->FindNode(bone->mName);
+            bindPose[bone->mName.data]=node->mTransformation;
+            cout<<"bone found: "<<bone->mName.data<<endl;
         }
+    }
 }
