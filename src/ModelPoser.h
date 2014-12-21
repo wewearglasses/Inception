@@ -17,6 +17,7 @@ class ModelPoser:public ofxAssimpModelLoader{
 public:
     void randomPose();
     void loopPose();
+    void bigLoopPose();
     void getBindPose();
     void dance(float volume);
 protected:

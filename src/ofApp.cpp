@@ -16,16 +16,17 @@ void ofApp::setup(){
 
     cam.setDistance(500);
     model.loadModel("man.dae");
-    
     model.disableMaterials();
-    model.setPosition(0, 200, 0);
+    float scale=model.getNormalizedScale();
+    ofPoint center=model.getSceneCenter();
+    model.setPosition(center.x*scale, center.y*scale, center.z*scale);
 //    model.setScale(0.7,0.7,0.7);
     frame.allocate(4000, 4000);
 //    ofSetFrameRate(25);
     
     shader.load("shaders/noise");
     mic.listDevices();
-    mic.setDeviceID(2);
+    mic.setDeviceID(4);
     bufferSize=256;
     mic.setup(this, 0, 2, 44100, bufferSize, 4);
 
@@ -33,6 +34,8 @@ void ofApp::setup(){
     
     rotationY=0;
     pastVolumes.assign(100, 0);
+    
+    model.randomPose();
 }
 
 //--------------------------------------------------------------
@@ -47,15 +50,15 @@ void ofApp::draw(){
     ofEnableLighting();
     pointLight.enable();
     ofTranslate(ofGetWidth()/2,ofGetHeight()/2);
-    rotationY+=1;
+    rotationY+=volume*10;
 
     ofRotateY(rotationY);
-
+//    ofRotateZ(-rotationY/2);
     
     shader.begin();
     //we want to pass in some varrying values to animate our type / color
-    shader.setUniform1f("timeValX", ofGetElapsedTimef() * 0.1 );
-    shader.setUniform1f("timeValY", -ofGetElapsedTimef() * 0.18 );
+    shader.setUniform1f("timeValX", ofGetElapsedTimef() * 0.01/(volume+1) );
+    shader.setUniform1f("timeValY", -ofGetElapsedTimef() * 0.018/(volume+1) );
     model.drawFaces();
     
     shader.end();
@@ -92,6 +95,9 @@ void ofApp::audioIn(float * input, int bufferSize, int nChannels){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     switch (key) {
+        case 'r':
+            model.randomPose();
+            break;
         case ' ':
             model.randomPose();
             frame.begin();
@@ -113,6 +119,7 @@ void ofApp::keyPressed(int key){
             frame.end();
             isNewFrame=true;
             break;
+        
     }
 }
 
