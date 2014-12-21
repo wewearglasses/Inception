@@ -8,80 +8,36 @@
 
 #include "ModelPoser.h"
 
-void ModelPoser::randomPose(){
+void ModelPoser::setPose(Pose p){
+    for (pair<string, aiVector3D> bone:p) {
+        aiNode* node=scene->mRootNode->FindNode(bone.first);
+        aiQuaternion rot=aiQuaternion(bone.second.x,bone.second.y,bone.second.z);
+        node->mTransformation=bindPose[bone.first]*aiMatrix4x4(rot.GetMatrix());
+    }
+    updateBones();
+    updateGLResources();
+}
+
+Pose ModelPoser::randomPose(){
     getBindPose();
+    Pose p;
     for (pair<string, aiMatrix4x4> bone:bindPose) {
         aiNode* node=scene->mRootNode->FindNode(bone.first);
-        aiQuaternion rot=aiQuaternion(ofRandom(-PI/4, PI/4),ofRandom(-PI/4,PI/4),ofRandom(-PI/4,PI/4));
-        if(bone.first=="head"){
-            rot=aiQuaternion(0,0,0);
-        }
-        node->mTransformation=bone.second*aiMatrix4x4(rot.GetMatrix());
+        p[bone.first]=aiVector3D(ofRandom(-PI/4, PI/4),ofRandom(-PI/4, PI/4),ofRandom(-PI/4, PI/4));
     }
-    updateBones();
-    updateGLResources();
+    return p;
 }
 
-void ModelPoser::bigLoopPose(){
-    
-}
-
-void ModelPoser::loopPose(){
+void ModelPoser::loopPose(int index, int total){
     getBindPose();
-    if (originRotations.size()==0) {
-        p=0;
-        for (pair<string, aiMatrix4x4> bone:bindPose) {
-            aiNode* node=scene->mRootNode->FindNode(bone.first);
-            
-            originRotations[bone.first]=aiVector3D(ofRandom(-PI, PI),ofRandom(-PI,PI),ofRandom(-PI,PI));
-            aiQuaternion rot=aiQuaternion(originRotations[bone.first].x,originRotations[bone.first].y,originRotations[bone.first].z);
-            node->mTransformation=bone.second*aiMatrix4x4(rot.GetMatrix());
-            phase1Rotations[bone.first]=(ofRandom(-PI, PI),ofRandom(-PI,PI),ofRandom(-PI,PI));
-            phase2Rotations[bone.first]=(ofRandom(-PI, PI),ofRandom(-PI,PI),ofRandom(-PI,PI));
-            phase3Rotations[bone.first]=(ofRandom(-PI, PI),ofRandom(-PI,PI),ofRandom(-PI,PI));
-            phase4Rotations[bone.first]=(ofRandom(-PI, PI),ofRandom(-PI,PI),ofRandom(-PI,PI));
-            phase5Rotations[bone.first]=(ofRandom(-PI, PI),ofRandom(-PI,PI),ofRandom(-PI,PI));
+    if (loopPoses.size()==0) {
+        for (int i=0; i<total; i++) {
+            loopPoses.push_back(randomPose());
         }
-    }else{
-        p+=1.0/25;
-        if (p>=6) {
-            p=0;
-        }
-        for (pair<string, aiMatrix4x4> bone:bindPose) {
-            aiNode* node=scene->mRootNode->FindNode(bone.first);
-            aiVector3D orot;
-            aiVector3D trot;
-            if(p>5){
-                orot=phase5Rotations[bone.first];
-                trot=originRotations[bone.first];
-            }
-            else if(p>4){
-                orot=phase4Rotations[bone.first];
-                trot=phase5Rotations[bone.first];
-            }
-            else if(p>3){
-                orot=phase3Rotations[bone.first];
-                trot=phase4Rotations[bone.first];
-            }
-            else if(p>2){
-                orot=phase2Rotations[bone.first];
-                trot=phase3Rotations[bone.first];
-            }else if(p>1){
-                orot=phase1Rotations[bone.first];
-                trot=phase2Rotations[bone.first];
-            }else{
-                orot=originRotations[bone.first];
-                trot=phase1Rotations[bone.first];
-            }
-            aiVector3D rot=orot+(trot-orot)*(p-int(p));
-            node->mTransformation=bone.second*aiMatrix4x4(aiQuaternion(rot.x,rot.y,rot.z).GetMatrix());
-        }
-        
     }
-    
-    updateBones();
-    updateGLResources();
+    setPose(loopPoses[index]);
 }
+
 
 void ModelPoser::dance(float volume){
     if(!scene){
@@ -89,19 +45,15 @@ void ModelPoser::dance(float volume){
     }
     getBindPose();
     
-    if(currRotations.size()==0){
+    if(currDancePose.size()==0){
         for (pair<string, aiMatrix4x4> bone:bindPose) {
-            currRotations[bone.first]=aiVector3D();
+            currDancePose[bone.first]=aiVector3D();
         }
     }
     
     int counter=0;
     for (pair<string, aiMatrix4x4> bone:bindPose) {
         aiNode* node=scene->mRootNode->FindNode(bone.first);
-        
-        
-        
-        
         aiVector3D v;
         if(volume>0.5){
             float seed=(ofGetFrameNum()+counter*100)*0.01;
@@ -110,11 +62,11 @@ void ModelPoser::dance(float volume){
             float dz=ofNoise(0,0,seed)*PI/4-PI/8;
             v=aiVector3D(dx,dy,dz)*volume*5;
         }else{
-            v=currRotations[bone.first]*0.95;
+            v=currDancePose[bone.first]*0.95;
         }
         
-        currRotations[bone.first]=v;
-        aiQuaternion rot=aiQuaternion(currRotations[bone.first].x,currRotations[bone.first].y,currRotations[bone.first].z);
+        currDancePose[bone.first]=v;
+        aiQuaternion rot=aiQuaternion(currDancePose[bone.first].x,currDancePose[bone.first].y,currDancePose[bone.first].z);
         node->mTransformation=bone.second*aiMatrix4x4(rot.GetMatrix());
         counter++;
     }
@@ -131,14 +83,26 @@ void ModelPoser::getBindPose(){
     for (int i=0; i<scene->mNumMeshes; i++) {
         
         aiMesh* mesh=scene->mMeshes[i];
+        cout<<"Bones: ";
         for (int j=0; j<mesh->mNumBones; j++) {
             aiBone* bone=mesh->mBones[j];
-            if(string(bone->mName.data)=="spine"){
+            cout<<bone->mName.data<<"\t";
+            if(excludeBone(string(bone->mName.data))){
                 continue;
             }
             aiNode* node=scene->mRootNode->FindNode(bone->mName);
             bindPose[bone->mName.data]=node->mTransformation;
-            cout<<"bone found: "<<bone->mName.data<<endl;
+        }
+        cout<<endl;
+    }
+}
+
+bool ModelPoser::excludeBone(string boneName){
+    string exludingBones[]={"head","jaw"};
+    for(string b:exludingBones){
+        if(b==boneName){
+            return true;
         }
     }
+    return false;
 }

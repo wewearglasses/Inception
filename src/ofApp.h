@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ModelPoser.h"
 #include "ofxGui.h"
-
+#include "ofxGifEncoder.h"
 class ofApp : public ofBaseApp{
 
 	public:
@@ -33,4 +33,7 @@ class ofApp : public ofBaseApp{
     float volume;
     float rotationY;
     vector<float> pastVolumes;
+    
+    ofxGifEncoder gif;
+    bool isSaving;
 };

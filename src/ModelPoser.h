@@ -13,23 +13,20 @@
 #include "ofxAssimpModelLoader.h"
 #include <map>
 
+typedef map<string,aiVector3D> Pose;
 class ModelPoser:public ofxAssimpModelLoader{
 public:
-    void randomPose();
-    void loopPose();
-    void bigLoopPose();
+    Pose randomPose();
+    void loopPose(int index, int total);
     void getBindPose();
     void dance(float volume);
+    void setPose(Pose p);
 protected:
+    bool excludeBone(string boneName);
     map<string,aiMatrix4x4>bindPose;
-    map<string,aiVector3D>currRotations;
-    map<string,aiVector3D>originRotations;
-    map<string,aiVector3D>phase1Rotations;
-    map<string,aiVector3D>phase2Rotations;
-    map<string,aiVector3D>phase3Rotations;
-    map<string,aiVector3D>phase4Rotations;
-    map<string,aiVector3D>phase5Rotations;
-    float p;
+    Pose currDancePose;
+    vector<Pose> loopPoses;
+
 };
 
 

@@ -10,6 +10,7 @@
 		1BE1E88F17A1BF8CB78CE2B8 /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D7722172A97A614DEDDE28 /* ofxToggle.cpp */; };
 		327DCCEAA5E951BA8287F3BE /* ofxAssimpTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E87358C6858E05D7BC4E186F /* ofxAssimpTexture.cpp */; };
 		42B49FA91A3DB3CF0011DA80 /* ModelPoser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42B49FA71A3DB3CF0011DA80 /* ModelPoser.cpp */; };
+		56AD80321A47395200D1B4ED /* ofxGifEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56AD802F1A4738BF00D1B4ED /* ofxGifEncoder.cpp */; };
 		5DF006824B4C6E387D9EA5C1 /* ofxPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0CF0AC072256EC886BA10352 /* ofxPanel.cpp */; };
 		64CBA1309CB1DF92084FD870 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42246F306F1208060AF3A4ED /* tinyxml.cpp */; };
 		740A1AA65126F03BD900052A /* ofxAssimpMeshHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FBCF54E2AF2A037E9F30176F /* ofxAssimpMeshHelper.cpp */; };
@@ -103,6 +104,12 @@
 		4D210184CE07E4A7BAA09437 /* tinyxml.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = tinyxml.h; path = ../of/addons/ofxXmlSettings/libs/tinyxml.h; sourceTree = SOURCE_ROOT; };
 		511118C63E67E272A9F7AEA6 /* aiTexture.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = aiTexture.h; path = ../of/addons/ofxAssimpModelLoader/libs/assimp/include/aiTexture.h; sourceTree = SOURCE_ROOT; };
 		56596C22FCFABD6C7EF79E7A /* aiConfig.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = aiConfig.h; path = ../of/addons/ofxAssimpModelLoader/libs/assimp/include/aiConfig.h; sourceTree = SOURCE_ROOT; };
+		56AD80281A4738BF00D1B4ED /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		56AD802C1A4738BF00D1B4ED /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		56AD802E1A4738BF00D1B4ED /* ofxGifDitherTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxGifDitherTypes.h; sourceTree = "<group>"; };
+		56AD802F1A4738BF00D1B4ED /* ofxGifEncoder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxGifEncoder.cpp; sourceTree = "<group>"; };
+		56AD80301A4738BF00D1B4ED /* ofxGifEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxGifEncoder.h; sourceTree = "<group>"; };
+		56AD80311A4738BF00D1B4ED /* ofxGifFrame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxGifFrame.h; sourceTree = "<group>"; };
 		5C90ED7C5DBAE5C5A491D4AA /* Logger.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = Logger.h; path = ../of/addons/ofxAssimpModelLoader/libs/assimp/include/Logger.h; sourceTree = SOURCE_ROOT; };
 		5E20C2549D890FC2B64F3C0F /* ofxAssimpTexture.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxAssimpTexture.h; path = ../of/addons/ofxAssimpModelLoader/src/ofxAssimpTexture.h; sourceTree = SOURCE_ROOT; };
 		60DF9B757A150A82F398CD1D /* aiMatrix3x3.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = aiMatrix3x3.h; path = ../of/addons/ofxAssimpModelLoader/libs/assimp/include/aiMatrix3x3.h; sourceTree = SOURCE_ROOT; };
@@ -219,6 +226,28 @@
 			name = ofxGui;
 			sourceTree = "<group>";
 		};
+		56AD80221A4738BF00D1B4ED /* ofxGifEncoder */ = {
+			isa = PBXGroup;
+			children = (
+				56AD80281A4738BF00D1B4ED /* LICENSE */,
+				56AD802C1A4738BF00D1B4ED /* README.md */,
+				56AD802D1A4738BF00D1B4ED /* src */,
+			);
+			name = ofxGifEncoder;
+			path = ../of/addons/ofxGifEncoder;
+			sourceTree = "<group>";
+		};
+		56AD802D1A4738BF00D1B4ED /* src */ = {
+			isa = PBXGroup;
+			children = (
+				56AD802E1A4738BF00D1B4ED /* ofxGifDitherTypes.h */,
+				56AD802F1A4738BF00D1B4ED /* ofxGifEncoder.cpp */,
+				56AD80301A4738BF00D1B4ED /* ofxGifEncoder.h */,
+				56AD80311A4738BF00D1B4ED /* ofxGifFrame.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		59905D957FDE48902CF1F729 /* assimp */ = {
 			isa = PBXGroup;
 			children = (
@@ -299,6 +328,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				56AD80221A4738BF00D1B4ED /* ofxGifEncoder */,
 				2C8F245ACBE61E28646C17F2 /* ofxAssimpModelLoader */,
 				480A780D8D0308AE4A368801 /* ofxGui */,
 				1F4FB5C423662B96ADFDCC0B /* ofxXmlSettings */,
@@ -518,6 +548,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56AD80321A47395200D1B4ED /* ofxGifEncoder.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				E4FC77752E6B6229E24B6B19 /* ofxAssimpAnimation.cpp in Sources */,
@@ -661,6 +692,21 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = NONE;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					../of/addons/ofxAssimpModelLoader/libs,
+					../of/addons/ofxAssimpModelLoader/libs/assimp,
+					../of/addons/ofxAssimpModelLoader/libs/assimp/include,
+					../of/addons/ofxAssimpModelLoader/libs/assimp/include/Compiler,
+					../of/addons/ofxAssimpModelLoader/libs/assimp/lib,
+					../of/addons/ofxAssimpModelLoader/libs/assimp/lib/osx,
+					../of/addons/ofxAssimpModelLoader/src,
+					../of/addons/ofxGui/libs,
+					../of/addons/ofxGui/src,
+					../of/addons/ofxXmlSettings/libs,
+					../of/addons/ofxXmlSettings/src,
+					../of/addons/ofxGifEncoder/src,
+				);
 				ICON = "$(ICON_NAME_DEBUG)";
 				ICON_FILE = "$(ICON_FILE_PATH)$(ICON)";
 				INFOPLIST_FILE = "openFrameworks-Info.plist";
@@ -746,6 +792,21 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../of/libs/glut/lib/osx\"";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = NONE;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					../of/addons/ofxAssimpModelLoader/libs,
+					../of/addons/ofxAssimpModelLoader/libs/assimp,
+					../of/addons/ofxAssimpModelLoader/libs/assimp/include,
+					../of/addons/ofxAssimpModelLoader/libs/assimp/include/Compiler,
+					../of/addons/ofxAssimpModelLoader/libs/assimp/lib,
+					../of/addons/ofxAssimpModelLoader/libs/assimp/lib/osx,
+					../of/addons/ofxAssimpModelLoader/src,
+					../of/addons/ofxGui/libs,
+					../of/addons/ofxGui/src,
+					../of/addons/ofxXmlSettings/libs,
+					../of/addons/ofxXmlSettings/src,
+					../of/addons/ofxGifEncoder/src,
+				);
 				ICON = "$(ICON_NAME_RELEASE)";
 				ICON_FILE = "$(ICON_FILE_PATH)$(ICON)";
 				INFOPLIST_FILE = "openFrameworks-Info.plist";

@@ -9,60 +9,78 @@ void ofApp::setup(){
     ofBackground(0, 0, 0);
     
     pointLight.setDiffuseColor( ofColor(100.f, 100.f, 100.f));
-    pointLight.setSpecularColor( ofColor(255.f, 255.f, 255.f));
+    pointLight.setSpecularColor( ofColor(255.f, 100.f, 100.f));
     pointLight.setAmbientColor(ofColor(100.f, 100.f, 100.f));
     pointLight.setPointLight();
     pointLight.setPosition(0, 0, 800);
-
+    
     cam.setDistance(500);
     model.loadModel("man.dae");
     model.disableMaterials();
     float scale=model.getNormalizedScale();
     ofPoint center=model.getSceneCenter();
     model.setPosition(center.x*scale, center.y*scale, center.z*scale);
-//    model.setScale(0.7,0.7,0.7);
-    frame.allocate(4000, 4000);
-//    ofSetFrameRate(25);
+    //    frame.allocate(4000, 4000);
+    //    ofSetFrameRate(25);
     
     shader.load("shaders/noise");
     mic.listDevices();
     mic.setDeviceID(4);
     bufferSize=256;
     mic.setup(this, 0, 2, 44100, bufferSize, 4);
-
+    
     ofSeedRandom();
     
     rotationY=0;
     pastVolumes.assign(100, 0);
     
     model.randomPose();
+    
+    gif.setup(ofGetWidth(), ofGetHeight());
+    gif.setFrameDuration(1/25.0);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-//    model.loopPose();
-    model.dance(volume);
+    //    model.loopPose();
+    //    model.dance(volume);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-//    frame.draw(0,0);
+    //    frame.draw(0,0);
     ofEnableLighting();
     pointLight.enable();
-    ofTranslate(ofGetWidth()/2,ofGetHeight()/2);
-    rotationY+=volume*10;
-
-    ofRotateY(rotationY);
-//    ofRotateZ(-rotationY/2);
+    //    ofTranslate(0,ofGetHeight()/2);
+    rotationY+=10;
     
-    shader.begin();
+    //    ofRotateY(rotationY);
+    //    ofRotateZ(-rotationY/2);
+    
+//        shader.begin();
     //we want to pass in some varrying values to animate our type / color
-    shader.setUniform1f("timeValX", ofGetElapsedTimef() * 0.01/(volume+1) );
-    shader.setUniform1f("timeValY", -ofGetElapsedTimef() * 0.018/(volume+1) );
-    model.drawFaces();
+    //    shader.setUniform1f("timeValX", ofGetElapsedTimef() * 0.01/(volume+1) );
+    //    shader.setUniform1f("timeValY", -ofGetElapsedTimef() * 0.018/(volume+1) );
+    int total=30;
+    for (int i=0; i<total; i++) {
+        ofPushMatrix();
+        ofTranslate(115*(i%10)-100, floor(i/10)*300,-500);
+        ofRotateX(rotationY+i*60);
+        model.loopPose(i, total);
+        model.drawFaces();
+        ofPopMatrix();
+    }
+    //    model.drawFaces();
     
-    shader.end();
-    
+    //    shader.end();
+    ofImage img;
+    img.grabScreen(0, 0, ofGetWidth(),ofGetHeight());
+    if(rotationY<=360){
+        gif.addFrame(img);
+    }else if(!isSaving){
+        isSaving=true;
+        gif.save("mess.gif");
+    }
     if (isNewFrame) {
         ofSaveFrame();
     }
@@ -110,7 +128,7 @@ void ofApp::keyPressed(int key){
                 ang+=5;
                 ofPushMatrix();
                 ofTranslate(ofGetWidth()/3+r*cosf(ang), ofGetHeight()/3+r*sin(ang));
-//                ofRotateY(180);
+                //                ofRotateY(180);
                 ofRotateZ(-90-ang*RAD_TO_DEG);
                 model.randomPose();
                 model.drawFaces();
@@ -119,46 +137,46 @@ void ofApp::keyPressed(int key){
             frame.end();
             isNewFrame=true;
             break;
-        
+            
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
+    
 }
