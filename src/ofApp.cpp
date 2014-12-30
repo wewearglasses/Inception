@@ -21,7 +21,7 @@ void ofApp::setup(){
     ofPoint center=model.getSceneCenter();
     model.setPosition(center.x*scale, center.y*scale, center.z*scale);
     //    frame.allocate(4000, 4000);
-    //    ofSetFrameRate(25);
+        ofSetFrameRate(25);
     
     shader.load("shaders/noise");
     mic.listDevices();
@@ -36,8 +36,8 @@ void ofApp::setup(){
     
     model.randomPose();
     
-    gif.setup(ofGetWidth(), ofGetHeight());
-    gif.setFrameDuration(1/25.0);
+    gif.setup(ofGetWidth(), ofGetHeight(), 0.08, 256);
+    //    gif.setFrameDuration(1/25.0);
 }
 
 //--------------------------------------------------------------
@@ -52,34 +52,46 @@ void ofApp::draw(){
     ofEnableLighting();
     pointLight.enable();
     //    ofTranslate(0,ofGetHeight()/2);
-    rotationY+=10;
+    rotationY-=3;
     
     //    ofRotateY(rotationY);
     //    ofRotateZ(-rotationY/2);
     
-//        shader.begin();
+    //        shader.begin();
     //we want to pass in some varrying values to animate our type / color
     //    shader.setUniform1f("timeValX", ofGetElapsedTimef() * 0.01/(volume+1) );
     //    shader.setUniform1f("timeValY", -ofGetElapsedTimef() * 0.018/(volume+1) );
-    int total=30;
-    for (int i=0; i<total; i++) {
-        ofPushMatrix();
-        ofTranslate(115*(i%10)-100, floor(i/10)*300,-500);
-        ofRotateX(rotationY+i*60);
-        model.loopPose(i, total);
-        model.drawFaces();
-        ofPopMatrix();
+    int total=50;
+    int layers=13;
+    ofTranslate(ofGetWidth()/3, ofGetHeight()/3);
+    ofRotateZ(-rotationY);
+    for (int j=0;j<layers;j++){
+        model.loopPose(j, total);
+        for (int i=0; i<total; i++) {
+            float n=i+1;
+            float ang=PI/20*n+TWO_PI/layers*j;
+            float r=(n-1)*20;
+            ofPushMatrix();
+            ofTranslate(r*cos(ang),r*sin(ang));
+            ofRotateZ(-(rotationY*6+i*60));
+            ofScale((n+1.0)/total/4,(n+1.0)/total/4,(n+1.0)/total/4);
+            
+            model.drawFaces();
+            ofPopMatrix();
+        }
     }
+    
     //    model.drawFaces();
     
     //    shader.end();
     ofImage img;
     img.grabScreen(0, 0, ofGetWidth(),ofGetHeight());
-    if(rotationY<=360){
-        gif.addFrame(img);
+    if(rotationY>-370){
+//                ofSaveFrame();
+        //        gif.addFrame(img);
     }else if(!isSaving){
         isSaving=true;
-        gif.save("mess.gif");
+        //        gif.save("mess.gif");
     }
     if (isNewFrame) {
         ofSaveFrame();
@@ -177,6 +189,6 @@ void ofApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo){
     
 }
